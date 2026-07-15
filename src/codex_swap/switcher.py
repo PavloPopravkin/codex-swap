@@ -258,6 +258,17 @@ def resolve_target(store: Store, token: str) -> Account:
     raise SwitchError(f"no account matches '{token}'")
 
 
+def swap_slots(store: Store, first: Account, second: Account) -> None:
+    """Exchange two accounts' slot numbers (list order / numeric targets).
+
+    Session profiles are found by the identity inside their auth.json, not by
+    slot number, so `run` keeps working after a swap: on the next launch the
+    profile's tokens are synced back by account_id and the directory is
+    re-seeded for its new owner.
+    """
+    first.slot, second.slot = second.slot, first.slot
+
+
 def rotation_target(store: Store, current_id: Optional[str]) -> Account:
     """Next enabled account after the current one (by slot order)."""
     candidates = [

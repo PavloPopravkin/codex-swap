@@ -23,6 +23,7 @@ from .switcher import (
     best_target,
     safe_login,
     snapshot_usage,
+    swap_slots,
     sync_back,
 )
 from . import usage as usage_mod
@@ -198,6 +199,22 @@ def cmd_remove(args) -> int:
         store.accounts.remove(acc)
         save_store(store)
     print(f"removed {acc.display()} (slot {acc.slot})")
+    return 0
+
+
+def cmd_swap(args) -> int:
+    with locked():
+        store = load_store()
+        try:
+            first = resolve_target(store, args.first)
+            second = resolve_target(store, args.second)
+        except SwitchError as e:
+            return _err(str(e))
+        if first.account_id == second.account_id:
+            return _err("that is the same account twice")
+        swap_slots(store, first, second)
+        save_store(store)
+    print(f"swapped: slot {first.slot} = {first.display()}, slot {second.slot} = {second.display()}")
     return 0
 
 
@@ -388,6 +405,11 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("target", metavar="NUM|EMAIL|ALIAS")
         sp.add_argument("--force", action="store_true")
         sp.set_defaults(func=cmd_remove)
+
+    sp = sub.add_parser("swap", help="Exchange two accounts' slot numbers (list order)")
+    sp.add_argument("first", metavar="NUM|EMAIL|ALIAS")
+    sp.add_argument("second", metavar="NUM|EMAIL|ALIAS")
+    sp.set_defaults(func=cmd_swap)
 
     sp = sub.add_parser("alias", help="Set (or clear) an account alias")
     sp.add_argument("target", metavar="NUM|EMAIL")

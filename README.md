@@ -72,6 +72,7 @@ cxswap switch --strategy best   # most quota left
 
 cxswap disable 2                # hold out of rotation (still an explicit target)
 cxswap enable 2
+cxswap swap 1 2                 # exchange two accounts' slot numbers (list order)
 cxswap remove 2
 ```
 
