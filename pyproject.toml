@@ -1,0 +1,33 @@
+[project]
+name = "codex-swap"
+version = "0.2.0"
+description = "Multi-account switcher for the OpenAI Codex CLI: safe switching, live usage dashboard, parallel sessions, auto-rotation before rate limits"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Pavlo Popravkin" }]
+keywords = ["codex", "openai", "chatgpt", "cli", "account-switcher", "multi-account", "rate-limit"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3",
+    "Topic :: Utilities",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/PavloPopravkin/codex-swap"
+Issues = "https://github.com/PavloPopravkin/codex-swap/issues"
+
+[project.scripts]
+cxswap = "codex_swap.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/codex_swap"]

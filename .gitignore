@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+dist/
+*.egg-info/
+
+# internal project journals (local workflow, not part of the public repo)
+DECISIONS.md
+DEBT.md
+MANIFEST.md
+RESEARCH-*.md
