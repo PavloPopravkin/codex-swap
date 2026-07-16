@@ -1,4 +1,4 @@
-# codex-swap
+# cxswap
 
 Multi-account switcher for the [OpenAI Codex CLI](https://github.com/openai/codex).
 Switch between several ChatGPT accounts without logging out, see every
@@ -44,9 +44,11 @@ cxswap is built around those two facts:
 ## Install
 
 ```bash
-uv tool install git+https://github.com/PavloPopravkin/codex-swap
+uv tool install cxswap
 # or
-pipx install git+https://github.com/PavloPopravkin/codex-swap
+pipx install cxswap
+# or from source
+uv tool install git+https://github.com/PavloPopravkin/codex-swap
 ```
 
 Requires Python ≥ 3.9 and the codex CLI. No runtime dependencies (stdlib
@@ -73,6 +75,7 @@ cxswap switch --strategy best   # most quota left
 cxswap disable 2                # hold out of rotation (still an explicit target)
 cxswap enable 2
 cxswap swap 1 2                 # exchange two accounts' slot numbers (list order)
+cxswap move 2 1                 # assign an account to a slot (relocates if empty, swaps if taken)
 cxswap remove 2
 ```
 

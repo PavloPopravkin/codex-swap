@@ -23,6 +23,7 @@ from .switcher import (
     best_target,
     safe_login,
     snapshot_usage,
+    move_slot,
     swap_slots,
     sync_back,
 )
@@ -218,6 +219,35 @@ def cmd_swap(args) -> int:
     return 0
 
 
+def cmd_move(args) -> int:
+    with locked():
+        store = load_store()
+        try:
+            acc = resolve_target(store, args.account)
+        except SwitchError as e:
+            return _err(str(e))
+        target = args.slot.strip()
+        if not target.isdigit() or int(target) < 1:
+            return _err(
+                f"target slot must be a positive slot number, got: {args.slot!r} "
+                f"(use `swap` to trade two accounts by identifier)"
+            )
+        target = int(target)
+        if acc.slot == target:
+            print(f"already in slot {target}: {acc.display()}")
+            return 0
+        displaced = move_slot(store, acc, target)
+        save_store(store)
+    if displaced is not None:
+        print(
+            f"swapped: slot {acc.slot} = {acc.display()}, "
+            f"slot {displaced.slot} = {displaced.display()}"
+        )
+    else:
+        print(f"moved {acc.display()} to slot {target}")
+    return 0
+
+
 def cmd_alias(args) -> int:
     with locked():
         store = load_store()
@@ -410,6 +440,11 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("first", metavar="NUM|EMAIL|ALIAS")
     sp.add_argument("second", metavar="NUM|EMAIL|ALIAS")
     sp.set_defaults(func=cmd_swap)
+
+    sp = sub.add_parser("move", help="Assign an account to a slot number (swaps if taken)")
+    sp.add_argument("account", metavar="NUM|EMAIL|ALIAS")
+    sp.add_argument("slot", metavar="SLOT", help="Destination slot number")
+    sp.set_defaults(func=cmd_move)
 
     sp = sub.add_parser("alias", help="Set (or clear) an account alias")
     sp.add_argument("target", metavar="NUM|EMAIL")

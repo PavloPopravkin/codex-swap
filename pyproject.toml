@@ -1,6 +1,6 @@
 [project]
-name = "codex-swap"
-version = "0.2.1"
+name = "cxswap"
+version = "0.2.2"
 description = "Multi-account switcher for the OpenAI Codex CLI: safe switching, live usage dashboard, parallel sessions, auto-rotation before rate limits"
 readme = "README.md"
 requires-python = ">=3.9"

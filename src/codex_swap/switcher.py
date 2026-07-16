@@ -269,6 +269,28 @@ def swap_slots(store: Store, first: Account, second: Account) -> None:
     first.slot, second.slot = second.slot, first.slot
 
 
+def move_slot(store: Store, acc: Account, target: int) -> Optional[Account]:
+    """Assign `acc` to slot number `target`; swap with the occupant if taken.
+
+    The general form of `swap_slots`. Slots are just labels and list order
+    here (everything else keys on account_id), so a move is a relabel:
+
+    - target slot empty    -> `acc` takes it; its old slot is freed. Slots may
+      be sparse (`remove` leaves gaps), so any positive number is legal.
+    - target slot occupied -> the two accounts trade slots, identical to
+      `swap acc <occupant>`; the displaced account takes the vacated slot.
+
+    The caller is expected to short-circuit `acc.slot == target` as a no-op.
+    Returns the displaced account when the target was occupied, else None.
+    """
+    occupant = store.by_slot(target)
+    if occupant is not None and occupant.account_id != acc.account_id:
+        occupant.slot, acc.slot = acc.slot, target
+        return occupant
+    acc.slot = target
+    return None
+
+
 def rotation_target(store: Store, current_id: Optional[str]) -> Account:
     """Next enabled account after the current one (by slot order)."""
     candidates = [
